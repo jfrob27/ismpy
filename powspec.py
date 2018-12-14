@@ -1,6 +1,6 @@
 import numpy as np
 
-def powspec(image, reso=1):
+def powspec(image, reso=1, autocorr=False):
 	"""
 	Calculate the power spectrum of a 2D image
 
@@ -10,6 +10,9 @@ def powspec(image, reso=1):
 		Input array, must 2-dimentional and real
 	reso : float, optional
 		Resolution of the image in pixel^-1
+		
+	autocorr : If True, calculate the autocorrelation function
+		instead of the power spectrum. (False by default)
 
 	Returns
 	-------
@@ -33,6 +36,9 @@ def powspec(image, reso=1):
 	ps2D = np.abs( imft )**2
 
 	del imft
+    
+	if autocorr == True:
+		ps2D = np.fft.ifft2(ps2D).real
 
 	#Set-up kbins
 	#---------------------------------------------
@@ -76,7 +82,11 @@ def powspec(image, reso=1):
 		kval[j] = np.sum(k_mod[k_mod == np.float(j)]) / hval[j]
 		kpow[j] = np.sum(ps2D[k_mod == np.float(j)]) / hval[j]
 
-	tab_k = kval[1:np.size(hval)-1] / (k_crit * 2.* reso)
 	spec_k = kpow[1:np.size(hval)-1]
-	
+
+	if autocorr == False:
+		tab_k = kval[1:np.size(hval)-1] / (k_crit * 2.* reso)
+	else:
+		tab_k = kval[1:np.size(hval)-1] * reso
+    
 	return tab_k, spec_k
