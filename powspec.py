@@ -1,6 +1,6 @@
 import numpy as np
 
-def powspec(image, reso=1, autocorr=False):
+def powspec(image, reso=1, autocorr=False, **kwargs):
 	"""
 	Calculate the power spectrum of a 2D image
 
@@ -13,6 +13,13 @@ def powspec(image, reso=1, autocorr=False):
 		
 	autocorr : If True, calculate the autocorrelation function
 		instead of the power spectrum. (False by default)
+		
+	Optional keywords
+	------------------
+	im2 : array_like
+		Second input array of the same size than image.
+		If called, the function returns the cross-spectrum
+		between 'image' and 'im2'
 
 	Returns
 	-------
@@ -20,6 +27,7 @@ def powspec(image, reso=1, autocorr=False):
 	tab_k : Array of spatial scales used for the decomposition
 	spec_k: The power spectrum
 	"""
+	
 	na=float(image.shape[1])
 	nb=float(image.shape[0])
 	nf=np.max(np.array([na,nb]))
@@ -32,8 +40,14 @@ def powspec(image, reso=1, autocorr=False):
 	#Fourier transform & 2D power spectrum
 	#---------------------------------------------
 
-	imft=np.fft.fft2(image) / (na)
-	ps2D = np.abs( imft )**2
+	imft=np.fft.fft2(image)
+	
+	if 'im2' in kwargs:
+		im2 = kwargs.get('im2')
+		im2ft = np.fft.fft2(im2)
+		ps2D = imft * np.conj(im2ft) / (na*nb)
+	else:
+		ps2D = np.abs( imft )**2 / (na*nb)
 
 	del imft
     
