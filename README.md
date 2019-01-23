@@ -6,11 +6,7 @@ The main purpose of this repository si to give the essential tools to perform a 
 
 Here is a non-hexaustive description of some functions:
 
-* The function **powspec()** calculates the classical Fourier Power Spectrum of an image:
-
-$$P(\mathbf{k}) = \langle |A(\mathbf{k})|^2 \rangle_{\theta}$$
-
-where the information is averaged over the azimuthal angles $\theta$ as a function of the wavenumber $k$.
+* The function **powspec()** calculates the classical Fourier Power Spectrum of an image where the Fourier coefficients are averaged over the azimuthal angles as a function of the wavenumber.
 
 * The function **gauss_beam()** allows one to model the transfer function of a telescope by a Gaussian function.
 
